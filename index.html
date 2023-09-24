@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Scroll to Top Example</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+        }
+
+        header {
+            background-color: #333;
+            color: white;
+            text-align: center;
+            padding: 1rem;
+        }
+
+        main {
+            padding: 2rem;
+        }
+
+        section {
+            background-color: white;
+            margin-bottom: 2rem;
+            padding: 1rem;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+
+        h2 {
+            margin-top: 0;
+        }
+
+        #scrollToTop {
+            display: none;
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background-color: #333;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 24px;
+        }
+
+        #scrollToTop:hover {
+            background-color: #555;
+        }
+
+
+        @keyframes rotate {
+            0% {
+                transform: rotate(0deg);
+            }
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
+        #scrollToTop.rotating {
+            animation: rotate 1s linear infinite;
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <h1>Welcome to My Page</h1>
+</header>
+
+<main id="main-content">
+    <!-- Sections will be generated here -->
+</main>
+
+<button id="scrollToTop" onclick="scrollToTop()">↑</button>
+
+<script>
+
+
+    // Single Detect scroll events
+    window.addEventListener('scroll', function() {
+        const button = document.getElementById('scrollToTop');
+
+        if (window.scrollY > 100 && !isScrolling) {
+            button.style.display = 'block';
+        } else if (!isScrolling) {
+            button.style.display = 'none';
+        }
+    });
+
+    let isScrolling = false;
+
+    // Function to scroll to the top of the page
+    function scrollToTop() {
+        isScrolling = true;
+        const button = document.getElementById('scrollToTop');
+        button.style.display = 'block'; // Show the button when scrolling starts
+        button.classList.add('rotating');
+
+        const scrollInterval = setInterval(() => {
+            if (window.scrollY === 0) {
+                clearInterval(scrollInterval);
+                button.classList.remove('rotating');
+                isScrolling = false;
+                button.style.display = 'none'; // Hide the button when scrolling ends
+            } else {
+                window.scrollBy(0, -50);
+            }
+        }, 10);
+    }
+
+
+    // Generate 50 sections
+    const mainContent = document.getElementById('main-content');
+    for (let i = 1; i <= 50; i++) {
+        const section = document.createElement('section');
+        const h2 = document.createElement('h2');
+        const p = document.createElement('p');
+
+        h2.textContent = `Section ${i}`;
+        p.textContent = 'Lorem ipsum dolor sit, amet consectetur adipisicing elit. Quisquam, in!';
+
+        section.appendChild(h2);
+        section.appendChild(p);
+
+        mainContent.appendChild(section);
+    }
+</script>
+</body>
+</html>
