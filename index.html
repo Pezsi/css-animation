@@ -18,6 +18,22 @@
             padding: 1rem;
         }
 
+        .jump-button {
+            position: fixed;
+            bottom: 20px;
+            right: 50px;
+            width: 50px;
+            height: 100px;
+            background-size: cover;
+            border: 2px solid black;  /* Added black border */
+            outline: none;
+            z-index: 9999;
+            display: none;
+        }
+
+
+
+
         main {
             padding: 2rem;
         }
@@ -77,42 +93,48 @@
     <!-- Sections will be generated here -->
 </main>
 
-<button id="scrollToTop" onclick="scrollToTop()">↑</button>
+<button
+        id="jumpButton"
+        style="background-image: url('jump1.png');"
+        class="jump-button"
+        type="button"
+        onclick="animateJump();">
+</button>
+
+
 
 <script>
 
 
-    // Single Detect scroll events
-    window.addEventListener('scroll', function() {
-        const button = document.getElementById('scrollToTop');
 
-        if (window.scrollY > 100 && !isScrolling) {
-            button.style.display = 'block';
-        } else if (!isScrolling) {
-            button.style.display = 'none';
+    let currentJumpFrame = 1;
+
+    function animateJump() {
+        // Scroll to top
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+
+        // Start the jump
+        currentJumpFrame = 1;
+        let jumpButton = document.getElementById('jumpButton');
+        let jumpInterval = setInterval(() => {
+            currentJumpFrame++;
+            if (currentJumpFrame > 4) {
+                clearInterval(jumpInterval); // Stop the interval when the jump finishes
+                currentJumpFrame = 1; // Reset to the starting frame
+            }
+            jumpButton.style.backgroundImage = "url('jump" + currentJumpFrame + ".png')";
+        }, 250);  // Adjust the interval to make the jump faster or slower
+    }
+
+    window.addEventListener('scroll', function() {
+        const jumpButton = document.getElementById('jumpButton');
+        if (window.scrollY > 100) {
+            jumpButton.style.display = 'block';
+        } else {
+            jumpButton.style.display = 'none';
         }
     });
 
-    let isScrolling = false;
-
-    // Function to scroll to the top of the page
-    function scrollToTop() {
-        isScrolling = true;
-        const button = document.getElementById('scrollToTop');
-        button.style.display = 'block'; // Show the button when scrolling starts
-        button.classList.add('rotating');
-
-        const scrollInterval = setInterval(() => {
-            if (window.scrollY === 0) {
-                clearInterval(scrollInterval);
-                button.classList.remove('rotating');
-                isScrolling = false;
-                button.style.display = 'none'; // Hide the button when scrolling ends
-            } else {
-                window.scrollBy(0, -50);
-            }
-        }, 10);
-    }
 
 
     // Generate 50 sections
@@ -133,3 +155,4 @@
 </script>
 </body>
 </html>
+
