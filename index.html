@@ -1,21 +1,45 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <title>Scroll to Top Example</title>
     <style>
+        @keyframes lavaLampBackground {
+            0% {
+                background-color: #D8BFD8;
+            }
+            25% {
+                background-color: #DDA0DD;
+            }
+            50% {
+                background-color: #9370DB;
+            }
+            75% {
+                background-color: #8A2BE2;
+            }
+            100% {
+                background-color: #D8BFD8;
+            }
+        }
+
         body {
             font-family: Arial, sans-serif;
             margin: 0;
             padding: 0;
-            background-color: #f4f4f4;
+            animation: lavaLampBackground 20s infinite alternate; /* Apply the animation here */
         }
 
         header {
-            background-color: #333;
+            background-color: rgba(51, 51, 51, 0.85); /* Slight Transparency */
             color: white;
             text-align: center;
             padding: 1rem;
+            transition: all 0.3s;
+        }
+
+        header:hover {
+            background-color: rgba(51, 51, 51, 0.95); /* Darker on Hover */
         }
 
         .jump-button {
@@ -27,14 +51,18 @@
             right: 50px;
             width: 50px;
             height: 50px;
-            border: 2px solid black;  /* Added black border */
+            border: none;
             outline: none;
             z-index: 9999;
             display: none;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+            transition: transform 0.3s, box-shadow 0.3s;
         }
 
-
-
+        .jump-button:hover {
+            transform: scale(1.1);
+            box-shadow: 0 7px 20px rgba(0, 0, 0, 0.5);
+        }
 
         main {
             padding: 2rem;
@@ -45,7 +73,10 @@
             margin-bottom: 2rem;
             padding: 1rem;
             border-radius: 8px;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            transition: transform 0.5s, opacity 0.5s;
+            transform: translateY(50px);
+            opacity: 0;
         }
 
         h2 {
@@ -57,19 +88,19 @@
             position: fixed;
             bottom: 20px;
             right: 20px;
-            background-color: #333;
+            background-color: rgba(51, 51, 51, 0.85); /* Slight Transparency */
             color: white;
             border: none;
             padding: 10px 20px;
             border-radius: 50%;
             cursor: pointer;
             font-size: 24px;
+            transition: background-color 0.3s;
         }
 
         #scrollToTop:hover {
-            background-color: #555;
+            background-color: rgba(85, 85, 85, 0.85); /* Slight Transparency */
         }
-
 
         @keyframes rotate {
             0% {
@@ -85,6 +116,7 @@
         }
     </style>
 </head>
+
 <body>
 
 <header>
@@ -92,41 +124,44 @@
 </header>
 
 <main id="main-content">
-    <!-- Sections will be generated here -->
 </main>
 
-<button
-        id="jumpButton"
-        style="background-image: url('jump1.png');"
-        class="jump-button"
-        type="button"
+<button id="jumpButton" style="background-image: url('jump1.png');" class="jump-button" type="button"
         onclick="animateJump();">
 </button>
 
-
-
 <script>
-
-
-
     let currentJumpFrame = 1;
 
     function animateJump() {
-        // Scroll to top
-        window.scrollTo({ top: 0, behavior: 'smooth' });
+        window.scrollTo({
+            top: 0,
+            behavior: 'smooth'
+        });
 
-        // Start the jump
         currentJumpFrame = 1;
         let jumpButton = document.getElementById('jumpButton');
         let jumpInterval = setInterval(() => {
             currentJumpFrame++;
             if (currentJumpFrame > 4) {
-                clearInterval(jumpInterval); // Stop the interval when the jump finishes
-                currentJumpFrame = 1; // Reset to the starting frame
+                clearInterval(jumpInterval);
+                currentJumpFrame = 1;
             }
             jumpButton.style.backgroundImage = "url('jump" + currentJumpFrame + ".png')";
-        }, 250);  // Adjust the interval to make the jump faster or slower
+        }, 250);
     }
+
+    function checkAndDisplaySections() {
+        const sections = document.querySelectorAll('section');
+        sections.forEach(section => {
+            if (window.scrollY + window.innerHeight > section.offsetTop + section.offsetHeight / 3) {
+                section.style.transform = "translateY(0)";
+                section.style.opacity = "1";
+            }
+        });
+    }
+
+    checkAndDisplaySections();
 
     window.addEventListener('scroll', function() {
         const jumpButton = document.getElementById('jumpButton');
@@ -135,11 +170,10 @@
         } else {
             jumpButton.style.display = 'none';
         }
+
+        checkAndDisplaySections();
     });
 
-
-
-    // Generate 50 sections
     const mainContent = document.getElementById('main-content');
     for (let i = 1; i <= 50; i++) {
         const section = document.createElement('section');
@@ -153,8 +187,16 @@
         section.appendChild(p);
 
         mainContent.appendChild(section);
+
+        // Immediately display the first five sections
+        if (i <= 5) {
+            section.style.transform = "translateY(0)";
+            section.style.opacity = "1";
+        }
     }
+
+
 </script>
 </body>
-</html>
 
+</html>
