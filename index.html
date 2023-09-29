@@ -6,32 +6,21 @@
     <title>Scroll to Top Example</title>
     <style>
         @keyframes lavaLampBackground {
-            0% {
-                background-color: #D8BFD8;
-            }
-            25% {
-                background-color: #DDA0DD;
-            }
-            50% {
-                background-color: #9370DB;
-            }
-            75% {
-                background-color: #8A2BE2;
-            }
-            100% {
-                background-color: #D8BFD8;
-            }
+            0%, 100% { background-color: #fffafa; }
+            25% { background-color: #d96ad9; }
+            50% { background-color: #9390DB; }
+            75% { background-color: #8A2BE2; }
         }
 
         body {
             font-family: Arial, sans-serif;
             margin: 0;
             padding: 0;
-            animation: lavaLampBackground 20s infinite alternate; /* Apply the animation here */
+            animation: lavaLampBackground 20s infinite alternate;
         }
 
         header {
-            background-color: rgba(51, 51, 51, 0.85); /* Slight Transparency */
+            background-color: rgba(51, 51, 51, 0.85);
             color: white;
             text-align: center;
             padding: 1rem;
@@ -39,7 +28,7 @@
         }
 
         header:hover {
-            background-color: rgba(51, 51, 51, 0.95); /* Darker on Hover */
+            background-color: rgba(51, 51, 51, 0.95);
         }
 
         .jump-button {
@@ -83,36 +72,8 @@
             margin-top: 0;
         }
 
-        #scrollToTop {
-            display: none;
-            position: fixed;
-            bottom: 20px;
-            right: 20px;
-            background-color: rgba(51, 51, 51, 0.85); /* Slight Transparency */
-            color: white;
-            border: none;
-            padding: 10px 20px;
-            border-radius: 50%;
-            cursor: pointer;
-            font-size: 24px;
-            transition: background-color 0.3s;
-        }
-
-        #scrollToTop:hover {
-            background-color: rgba(85, 85, 85, 0.85); /* Slight Transparency */
-        }
-
         @keyframes rotate {
-            0% {
-                transform: rotate(0deg);
-            }
-            100% {
-                transform: rotate(360deg);
-            }
-        }
-
-        #scrollToTop.rotating {
-            animation: rotate 1s linear infinite;
+            0%, 100% { transform: rotate(0deg); }
         }
     </style>
 </head>
@@ -120,35 +81,46 @@
 <body>
 
 <header>
-    <h1>Welcome to My Page</h1>
+    <h1>Scroll to Top</h1>
 </header>
 
 <main id="main-content">
 </main>
 
-<button id="jumpButton" style="background-image: url('jump1.png');" class="jump-button" type="button"
-        onclick="animateJump();">
-</button>
+<button id="jumpButton" style="background-image: url('jump1.png');" class="jump-button" type="button" onclick="animateJump();"></button>
 
 <script>
     let currentJumpFrame = 1;
 
     function animateJump() {
-        window.scrollTo({
-            top: 0,
-            behavior: 'smooth'
-        });
+        const startingY = window.scrollY;
+        const targetY = 0;
+        const duration = 3000;
+        let startTime = null;
 
-        currentJumpFrame = 1;
         let jumpButton = document.getElementById('jumpButton');
         let jumpInterval = setInterval(() => {
-            currentJumpFrame++;
-            if (currentJumpFrame > 4) {
-                clearInterval(jumpInterval);
-                currentJumpFrame = 1;
-            }
+            currentJumpFrame = currentJumpFrame % 4 + 1;
             jumpButton.style.backgroundImage = "url('jump" + currentJumpFrame + ".png')";
-        }, 250);
+        }, duration / 4);
+
+        function animation(currentTime) {
+            if (!startTime) startTime = currentTime;
+
+            const progress = Math.min((currentTime - startTime) / duration, 1);
+            const currentY = startingY + (targetY - startingY) * progress;
+
+            window.scrollTo(0, currentY);
+
+            if (progress >= 1) {
+                clearInterval(jumpInterval);
+                window.scrollTo(0, targetY);
+            } else {
+                requestAnimationFrame(animation);
+            }
+        }
+
+        requestAnimationFrame(animation);
     }
 
     function checkAndDisplaySections() {
@@ -165,12 +137,7 @@
 
     window.addEventListener('scroll', function() {
         const jumpButton = document.getElementById('jumpButton');
-        if (window.scrollY > 100) {
-            jumpButton.style.display = 'block';
-        } else {
-            jumpButton.style.display = 'none';
-        }
-
+        jumpButton.style.display = window.scrollY > 100 ? 'block' : 'none';
         checkAndDisplaySections();
     });
 
@@ -185,17 +152,13 @@
 
         section.appendChild(h2);
         section.appendChild(p);
-
         mainContent.appendChild(section);
 
-        // Immediately display the first five sections
         if (i <= 5) {
             section.style.transform = "translateY(0)";
             section.style.opacity = "1";
         }
     }
-
-
 </script>
 </body>
 
